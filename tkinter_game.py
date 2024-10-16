@@ -10,12 +10,19 @@ window.title("2048 game")
 grid = [[0] * 4 for _ in range(4)]  
 score=0 
 
+global cell_labels
+global score_label
+
+cell_labels=[]
+score_label=None
+
 def create_widget(): #creates the frames and labels fro the grid
-
+    global cell_labels,score_label
+    
     frame= tk.Frame(window)
-    frame.grid(padx=15,pady=15) #dimensions of frame
+    frame.grid(padx=30,pady=30) #dimensions of frame
 
-    cell_labels = []  #represents each cell in the grid
+    #cell_labels = []  #represents each cell in the grid
 
     for row in range(4):
         row_labels = []
@@ -28,7 +35,8 @@ def create_widget(): #creates the frames and labels fro the grid
 
         cell_labels.append(row_labels)  #each row is added making it a 2D grid
 
-    score_label = tk.Label(window, text=f"Score: {score}",font=('Arial', 16))
+    score_label = tk.Label(frame, text=f"Score: {score}", font=('Arial', 16),bg='#6F8FAF')
+    #score_label.grid(row=0, column=0, columnspan=4, pady=5)
     score_label.grid()
 
 def start_game():
@@ -52,7 +60,7 @@ def update_grid(): #updfates the grid to match the numbers/tiles added
     for r in range(4): #row
         for c in range(4): #colum
             value = grid[r][c]
-            cell_labels[r][c].config(text=str(value) if value else "", bg=get_tile_color(value))
+            cell_labels[r][c].config(text=str(value) if value else "", bg=colour_tile(value))
     score_label.config(text=f"Score: {score}")
 
 def colour_tile(value):
@@ -89,14 +97,15 @@ def move(direction):
     
 def move_vertical(up=True):  #moved tile up/down
     moved=False
-
+    global score
     for c in range(4):
         col= [grid[r][c] for r in range(4)]
 
         if not up:
             col=col[ : :-1]
 
-            new_col, moved_in_col, score_gained = merge_tiles(col)  #merges tiles, changes score
+        new_col, moved_in_col, score_gained = merge_tiles(col)  #merges tiles, changes score
+
         if not up:
             new_col = new_col[::-1]
 
@@ -110,12 +119,12 @@ def move_vertical(up=True):  #moved tile up/down
     return moved
 
 def move_horizontal(left=True):
-
+    global score
     moved=False
     for r in range(4):
         row=grid[r]
 
-        if not row:
+        if not left:
             row=row[ : :-1]
         
         new_row, moved_in_row, score_gained = merge_tiles(row) #merges tiles, changes score
@@ -164,32 +173,56 @@ def check_game_over():
                 return False
             if c < 3 and grid[r][c] == grid[r][c+1]: #adjacent values are same - can be merged
                 return False
-            if r<3 and grid[r][c] == grid[r][c+1]: #top/bottom values same - can be merged
+            if r < 3 and grid[r][c] == grid[r + 1][c]: #top/bottom values same - can be merged
                 return False
     return True #if no space return true 
 
 def reset_game():
-    
+    global grid, score, frame 
+    grid = [[0] * 4 for _ in range(4)]
+    score=0
+    add_new_tile()
+    add_new_tile()
+    update_grid()
+
+    if frame is not None: #rests whole frame once the reset button is clicked
+        frame.destroy()
+        frame = None
 
 def destroy():
     #system.exit()
-    window.quit()
+    window.destroy()
 
 def show_game_over():
     #dsiplay game over message
 
-    frame=tk.Frame(window)
-    frame.pack(expand=True)
+    '''frame=tk.Frame(window)
+    frame.grid(expand=True)
 
     message_label = tk.Label(frame,text="GAME OVER!",font=("Helvetica", 16))
     message_label.pack(pady=10)
 
     reset=tk.Button(frame,text="Reset",command=reset_game,relief=tk.RAISED)
-    reset.pack(side=tk.LEFT, padx=10, pady=10)
+    reset.grid(side=tk.LEFT, padx=10, pady=10)
 
     ok=tk.Button(frame,text="OK",relief=tk.RAISED, command= destroy)
-    ok.pack(side=tk.Right,padx=10,pady=10)
+    ok.grid(side=tk.Right,padx=10,pady=10)'''
+
+    global frame
+
+    frame = tk.Frame(window)
+    frame.grid(padx=15, pady=15)  # Use grid for layout
+
+    message_label = tk.Label(frame, text="GAME OVER!", font=("Helvetica", 16))
+    message_label.grid(row=0, column=0, columnspan=2, pady=(10, 20))  # Centered above buttons
+
+    reset_button = tk.Button(frame, text="Reset", command=reset_game, relief=tk.RAISED)
+    reset_button.grid(row=1, column=0, padx=(10, 5), pady=10)  # Left button
+
+    ok_button = tk.Button(frame, text="OK", relief=tk.RAISED, command=destroy)
+    ok_button.grid(row=1, column=1, padx=(5, 10), pady=10)  # Right button
   
+window.bind("<Key>", key_pressed)  # Binds any key press to the key_pressed function
 
 create_widget() 
 start_game() 
