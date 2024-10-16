@@ -22,8 +22,6 @@ def create_widget(): #creates the frames and labels fro the grid
     frame= tk.Frame(window)
     frame.grid(padx=30,pady=30) #dimensions of frame
 
-    #cell_labels = []  #represents each cell in the grid
-
     for row in range(4):
         row_labels = []
 
@@ -171,11 +169,11 @@ def check_game_over():
         for c in range(4):
             if grid[r][c]==0: #more space is available hence not over
                 return False
-            if c < 3 and grid[r][c] == grid[r][c+1]: #adjacent values are same - can be merged
+            if c < 3 and grid[r][c] == grid[r][c+1]: #if adjacent values are same - can be merged
                 return False
-            if r < 3 and grid[r][c] == grid[r + 1][c]: #top/bottom values same - can be merged
+            if r < 3 and grid[r][c] == grid[r + 1][c]: #if top/bottom values same - can be merged
                 return False
-    return True #if no space return true 
+    return True #if no merging possible return true 
 
 def reset_game():
     global grid, score, frame 
@@ -195,38 +193,23 @@ def destroy():
 
 def show_game_over():
     #dsiplay game over message
-
-    '''frame=tk.Frame(window)
-    frame.grid(expand=True)
-
-    message_label = tk.Label(frame,text="GAME OVER!",font=("Helvetica", 16))
-    message_label.pack(pady=10)
-
-    reset=tk.Button(frame,text="Reset",command=reset_game,relief=tk.RAISED)
-    reset.grid(side=tk.LEFT, padx=10, pady=10)
-
-    ok=tk.Button(frame,text="OK",relief=tk.RAISED, command= destroy)
-    ok.grid(side=tk.Right,padx=10,pady=10)'''
-
     global frame
 
     frame = tk.Frame(window)
     frame.grid(padx=15, pady=15)  # Use grid for layout
 
     message_label = tk.Label(frame, text="GAME OVER!", font=("Helvetica", 16))
-    message_label.grid(row=0, column=0, columnspan=2, pady=(10, 20))  # Centered above buttons
+    message_label.grid(row=0, column=0, columnspan=2, pady=(10, 20))  
 
     reset_button = tk.Button(frame, text="Reset", command=reset_game, relief=tk.RAISED)
-    reset_button.grid(row=1, column=0, padx=(10, 5), pady=10)  # Left button
+    reset_button.grid(row=1, column=0, padx=(10, 5), pady=10)  
 
     ok_button = tk.Button(frame, text="OK", relief=tk.RAISED, command=destroy)
-    ok_button.grid(row=1, column=1, padx=(5, 10), pady=10)  # Right button
+    ok_button.grid(row=1, column=1, padx=(5, 10), pady=10)  
   
-window.bind("<Key>", key_pressed)  # Binds any key press to the key_pressed function
+window.bind("<Key>", key_pressed)  #binds any key press to the key_pressed function
 
 create_widget() 
 start_game() 
 
 window.mainloop()
-
-
