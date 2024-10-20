@@ -202,10 +202,10 @@ def show_game_over():
     message_label.grid(row=0, column=0, columnspan=2, pady=(10, 20))  
 
     reset_button = tk.Button(frame, text="Reset", command=reset_game, relief=tk.RAISED)
-    reset_button.grid(row=1, column=0, padx=(10, 5), pady=10)  
+    reset_button.grid(row=1, column=0, padx=(10, 10), pady=10)  
 
     ok_button = tk.Button(frame, text="OK", relief=tk.RAISED, command=destroy)
-    ok_button.grid(row=1, column=1, padx=(5, 10), pady=10)  
+    ok_button.grid(row=1, column=1, padx=(10, 10), pady=10)  
   
 window.bind("<Key>", key_pressed)  #binds any key press to the key_pressed function
 
